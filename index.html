@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kenalan dengan AI 🤖</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #38bdf8;
+    --sun: #fbbf24;
+    --mint: #34d399;
+    --coral: #fb7185;
+    --purple: #a78bfa;
+    --navy: #0f172a;
+    --soft: #f0f9ff;
+    --card-bg: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #ede9fe 100%);
+    min-height: 100vh;
+    color: var(--navy);
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: rgba(255,255,255,0.4);
+    z-index: 999;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky), var(--mint));
+    transition: width 0.4s ease;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    text-align: center;
+    padding: 60px 20px 30px;
+    position: relative;
+  }
+  .emoji-float {
+    font-size: 4rem;
+    display: block;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 10px 0 5px;
+    line-height: 1.1;
+  }
+  header p {
+    font-size: 1.1rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  /* ===== NAV DOTS ===== */
+  .nav-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    flex-wrap: wrap;
+  }
+  .nav-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .nav-dot.active { background: var(--sky); transform: scale(1.4); }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    display: none;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+    animation: fadeUp 0.5s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    margin-bottom: 6px;
+  }
+
+.msg.ai h3 {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  color: #0ea5e9;
+}
+
+.msg.ai h4 {
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.msg.ai ol {
+  padding-left: 18px;
+  margin: 6px 0;
+}
+
+.msg.ai li {
+  margin-bottom: 4px;
+}
+
+.msg.ai strong {
+  color: #0ea5e9;
+}
+  .badge {
+    display: inline-block;
+    background: var(--sun);
+    color: var(--navy);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--sky); }
+  .card h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card p { font-size: 1rem; color: #475569; line-height: 1.65; }
+
+  /* ===== HIGHLIGHT BOX ===== */
+  .highlight {
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+    line-height: 1.7;
+    font-weight: 600;
+  }
+  .highlight.blue  { background: #e0f2fe; border-left: 5px solid var(--sky); }
+  .highlight.green { background: #d1fae5; border-left: 5px solid var(--mint); }
+  .highlight.pink  { background: #ffe4e6; border-left: 5px solid var(--coral); }
+  .highlight.purple{ background: #ede9fe; border-left: 5px solid var(--purple); }
+  .highlight.yellow{ background: #fef9c3; border-left: 5px solid var(--sun); }
+
+  /* ===== ANALOGY CARD ===== */
+  .analogy {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .analogy-box {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+  }
+  .analogy-box .icon { font-size: 2.5rem; margin-bottom: 6px; }
+  .analogy-box p { font-size: 0.9rem; font-weight: 700; color: #475569; }
+  .analogy-arrow { font-size: 1.8rem; text-align: center; color: var(--sky); }
+
+  /* ===== GRID 2 ===== */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 18px; }
+  @media (max-width: 540px) { .grid2 { grid-template-columns: 1fr; } .analogy { grid-template-columns: 1fr; } .analogy-arrow { transform: rotate(90deg); } .quiz-form-grid, .summary-box-responsive { grid-template-columns: 1fr !important; } }
+
+  /* ===== QUIZ ===== */
+  .quiz-card {
+    background: white;
+    border-radius: 20px;
+    padding: 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
+  .quiz-card .question {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--navy);
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: #f1f5f9;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.97rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .quiz-option:hover { background: #e0f2fe; border-color: var(--sky); }
+  .quiz-option.correct { background: #d1fae5; border-color: var(--mint); color: #065f46; }
+  .quiz-option.wrong   { background: #ffe4e6; border-color: var(--coral); color: #9f1239; }
+  .quiz-feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok  { background: #d1fae5; color: #065f46; }
+  .quiz-feedback.no  { background: #ffe4e6; color: #9f1239; }
+
+  /* ===== CHAT DEMO ===== */
+  .chat-box {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+  .chat-header {
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    padding: 14px 20px;
+    color: white;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+  }
+
+.msg.ai p {
+  margin: 6px 0; /* kecilin jarak */
+}
+
+.msg.ai li {
+  margin-left: 15px;
+}
+
+.msg.ai h3, .msg.ai h4 {
+  margin: 8px 0 4px;
+}
+  .chat-dot { width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.6); }
+  .chat-messages { padding: 18px; min-height: 160px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 78%; padding: 11px 16px; border-radius: 18px; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
+  .msg.user { background: #0ea5e9; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.ai   { background: #f1f5f9; color: var(--navy); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .chat-input-row {
+    display: flex;
+    gap: 10px;
+    padding: 14px 18px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+  .chat-input-row input {
+    flex: 1;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input-row input:focus { border-color: var(--sky); }
+  .chat-input-row button {
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+  }
+  .chat-input-row button:hover { opacity: 0.85; }
+
+  /* ===== TIPS LIST ===== */
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  .tips-list li {
+    background: white;
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-weight: 600;
+    font-size: 0.97rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .tips-list li span.num {
+    background: linear-gradient(135deg, var(--sky), var(--purple));
+    color: white;
+    font-weight: 900;
+    border-radius: 8px;
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  /* ===== TIMELINE ===== */
+  .timeline { position: relative; padding-left: 36px; margin-bottom: 20px; }
+  .timeline::before { content:''; position:absolute; left:14px; top:0; bottom:0; width:3px; background: linear-gradient(to bottom, var(--sky), var(--purple)); border-radius:2px; }
+  .timeline-item { position:relative; margin-bottom:22px; }
+  .timeline-item::before { content:''; position:absolute; left:-28px; top:6px; width:14px; height:14px; border-radius:50%; background:var(--sky); border:3px solid white; box-shadow:0 0 0 2px var(--sky); }
+  .timeline-item h4 { font-weight:800; font-size:1rem; color:var(--navy); }
+  .timeline-item p { font-size:0.9rem; color:#64748b; margin-top:3px; line-height:1.5; }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display:flex; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap; }
+  .btn {
+    padding: 13px 28px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-next { background: linear-gradient(135deg, #38bdf8, #818cf8); color:white; }
+  .btn-prev { background: white; color:#64748b; border:2px solid #e2e8f0; }
+  .btn:hover { transform: scale(1.03); }
+
+  /* ===== SCORE ===== */
+  #score-display { display:none; }
+  .quiz-form-grid input:focus { border-color: var(--sky) !important; }
+  @media (max-width: 700px) { .quiz-form-grid { grid-template-columns: 1fr !important; } }
+  @media (max-width: 600px) { .summary-box-responsive { grid-template-columns: 1fr !important; } }
+
+  /* ===== FINAL ===== */
+  .final-box {
+    text-align: center;
+    background: white;
+    border-radius: 24px;
+    padding: 40px 30px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.1);
+  }
+  .final-box .big-emoji { font-size: 5rem; animation: bounce 1.5s infinite; }
+  .final-box h2 { font-family:'Fredoka One',cursive; font-size:2rem; margin:12px 0 8px; }
+  .final-box p { color:#64748b; font-size:1.05rem; line-height:1.7; }
+
+  /* safe-dos-donts */
+  .safe-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:18px; }
+  @media (max-width:500px) { .safe-grid { grid-template-columns:1fr; } }
+  .safe-card { border-radius:16px; padding:18px; }
+  .safe-card.do   { background:#d1fae5; border:2px solid #34d399; }
+  .safe-card.dont { background:#ffe4e6; border:2px solid #fb7185; }
+  .safe-card h4 { font-weight:900; font-size:1rem; margin-bottom:10px; }
+  .safe-card.do h4 { color:#065f46; }
+  .safe-card.dont h4 { color:#9f1239; }
+  .safe-card ul { padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:0.9rem; font-weight:600; color:#374151; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progress" style="width:14%"></div>
+</div>
+
+<header>
+  <span class="emoji-float">🤖</span>
+  <h1>Kenalan dengan AI!</h1>
+  <p>Belajar ngobrol dengan Teknologi Pintar 🌟</p>
+</header>
+
+<div class="nav-dots" id="nav-dots"></div>
+<div id="score-display">⭐ Poin: <span id="score-header">0</span></div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: APA ITU AI -->
+<!-- ============================================================ -->
+<div class="section active" id="sec-0">
+  <div class="badge">📖 Materi 1</div>
+  <div class="section-title">Apa itu Kecerdasan Buatan (AI)?</div>
+
+  <div class="highlight blue">
+    🤔 <strong>Pernahkah kamu bertanya-tanya</strong> kenapa HP bisa mengenali wajahmu? Atau kenapa YouTube tahu video apa yang kamu suka? Itu semua karena <strong>Kecerdasan Buatan</strong> alias <strong>AI (Artificial Intelligence)</strong>!
+  </div>
+
+  <div class="card">
+    <h3>🧠 Definisi AI (Mudahnya...)</h3>
+    <p>AI adalah <strong>program komputer yang dirancang untuk bisa "berpikir" dan belajar</strong>, mirip seperti otak manusia. AI bisa memahami bahasa, mengenali gambar, dan menjawab pertanyaan.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-box">
+      <div class="icon">📚</div>
+      <p>Kamu belajar dari buku & pengalaman</p>
+    </div>
+    <div class="analogy-arrow">↔️</div>
+    <div class="analogy-box">
+      <div class="icon">🤖</div>
+      <p>AI belajar dari jutaan data & teks</p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>👁️ Melihat</h3>
+      <p>AI bisa "melihat" dan mengenali foto, video, dan wajah — seperti Face ID di HP!</p>
+    </div>
+    <div class="card">
+      <h3>👂 Mendengar</h3>
+      <p>AI bisa mengerti suara dan perintah, seperti Siri atau Google Assistant.</p>
+    </div>
+    <div class="card">
+      <h3>💬 Berbicara</h3>
+      <p>AI bisa menjawab pertanyaan dan mengobrol dalam bahasa manusia.</p>
+    </div>
+    <div class="card">
+      <h3>📊 Belajar</h3>
+      <p>AI terus belajar dari data baru sehingga makin pintar seiring waktu.</p>
+    </div>
+  </div>
+
+  <div class="highlight green">
+    💡 <strong>Fun Fact:</strong> AI sudah dipakai ribuan tahun sebelum nama "AI" ada? Catur dan permainan logika adalah cikal bakal cara komputer berpikir!
+  </div>
+
+  <div class="btn-row">
+    <div></div>
+    <button class="btn btn-next" onclick="goTo(1)">Selanjutnya ➡️</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: AI DI SEKITAR KITA -->
+<!-- ============================================================ -->
+<div class="section" id="sec-1">
+  <div class="badge">🌍 Materi 2</div>
+  <div class="section-title">AI Ada di Mana-Mana!</div>
+
+  <div class="highlight purple">
+    🎮 Kamu mungkin sudah pakai AI tanpa sadar setiap hari! Yuk lihat AI yang ada di sekitar kamu...
+  </div>
+
+  <div class="card">
+    <h3>📱 Di HP-mu</h3>
+    <p>Face ID & sidik jari, kamera yang otomatis fokus, asisten suara (Siri/Google), dan rekomendasi lagu di Spotify — semua pakai AI!</p>
+  </div>
+  <div class="card">
+    <h3>🎬 Di Hiburan</h3>
+    <p>YouTube tahu video apa yang kamu suka. Netflix merekomendasikan film. Game online punya musuh yang bisa "berpikir" — itu semua AI!</p>
+  </div>
+  <div class="card">
+    <h3>🏫 Di Sekolah</h3>
+    <p>Aplikasi belajar seperti Duolingo dan Ruangguru menyesuaikan pelajaran dengan kemampuanmu berkat AI.</p>
+  </div>
+  <div class="card">
+    <h3>🏥 Di Kehidupan Nyata</h3>
+    <p>Dokter pakai AI untuk mendeteksi penyakit dari foto rontgen. Mobil pintar bisa parkir sendiri. AI membantu ilmuwan menemukan obat baru!</p>
+  </div>
+
+  <div class="highlight yellow">
+    🤩 <strong>Keren banget kan?</strong> AI adalah asisten tak terlihat yang bekerja di balik layar setiap hari!
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="goTo(0)">⬅️ Kembali</button>
+    <button class="btn btn-next" onclick="goTo(2)">Selanjutnya ➡️</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: CARA KERJA AI -->
+<!-- ============================================================ -->
+<div class="section" id="sec-2">
+  <div class="badge">⚙️ Materi 3</div>
+  <div class="section-title">Bagaimana AI Belajar?</div>
+
+  <div class="highlight blue">
+    🍳 Bayangkan AI seperti <strong>koki yang baru belajar masak</strong>. Semakin banyak resep yang ia baca dan masakan yang ia coba, semakin pintar ia memasak!
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>1. Mengumpulkan Data 📦</h4>
+      <p>AI diberikan jutaan contoh: teks, gambar, video, percakapan dari internet. Ini adalah "buku pelajaran" AI.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>2. Belajar dari Data 🔍</h4>
+      <p>AI mencari pola dari data tersebut. Misalnya: "kucing biasanya punya telinga runcing dan kumis."</p>
+    </div>
+    <div class="timeline-item">
+      <h4>3. Latihan & Koreksi 🎯</h4>
+      <p>AI mencoba menjawab pertanyaan. Kalau salah, ia dikoreksi dan belajar dari kesalahan itu.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>4. Makin Pintar! 🚀</h4>
+      <p>Setelah latihan miliaran kali, AI menjadi sangat pintar dan bisa menjawab berbagai pertanyaan!</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🎓 Analogi yang Mudah Dipahami</h3>
+    <p>AI belajar seperti kamu belajar: dari latihan, dari contoh, dan dari koreksi. Bedanya, AI bisa "membaca" jutaan buku dalam hitungan detik!</p>
+  </div>
+
+  <div class="highlight green">
+    ⚠️ <strong>Penting!</strong> AI tidak punya perasaan, tidak lapar, dan tidak tidur. Ia hanya program komputer yang sangat canggih — bukan makhluk hidup seperti manusia.
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="goTo(1)">⬅️ Kembali</button>
+    <button class="btn btn-next" onclick="goTo(3)">Selanjutnya ➡️</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: NGOBROL DENGAN AI -->
+<!-- ============================================================ -->
+<div class="section" id="sec-3">
+  <div class="badge">💬 Materi 4</div>
+  <div class="section-title">Cara Ngobrol dengan AI</div>
+
+  <div class="highlight purple">
+    🗣️ Ngobrol dengan AI itu mudah! Tapi ada trik agar AI bisa memberikan jawaban yang <strong>lebih bagus dan tepat</strong>.
+  </div>
+
+  <ul class="tips-list">
+    <li><span class="num">1</span><div><strong>Jelas dan Spesifik</strong><br>Daripada "ceritain sesuatu", coba "ceritakan tentang dinosaurus T-Rex untuk anak kelas 5 SD".</div></li>
+    <li><span class="num">2</span><div><strong>Berikan Konteks</strong><br>Beritahu AI siapa kamu dan apa yang kamu butuhkan. "Aku murid kelas 6, tolong bantu aku memahami fotosintesis."</div></li>
+    <li><span class="num">3</span><div><strong>Tanya Kalau Kurang Jelas</strong><br>Kalau jawaban AI membingungkan, boleh tanya lagi! "Bisa dijelaskan lebih sederhana?"</div></li>
+    <li><span class="num">4</span><div><strong>Cek Kebenarannya</strong><br>AI bisa salah! Selalu cek jawaban AI dari sumber lain seperti buku atau gurumu.</div></li>
+    <li><span class="num">5</span><div><strong>Jangan Masukkan Data Pribadi</strong><br>Jangan pernah memberi tahu AI nama lengkap, alamat rumah, atau nomor HP-mu.</div></li>
+  </ul>
+
+  <div class="card">
+    <h3>✍️ Contoh Pertanyaan yang Bagus</h3>
+    <p>
+      ✅ "Jelaskan sistem tata surya dengan cara yang mudah dimengerti anak SMP"<br>
+      ✅ "Bantu aku membuat puisi tentang musim hujan, 4 bait"<br>
+      ✅ "Apa perbedaan antara virus dan bakteri? Berikan contohnya"
+    </p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="goTo(2)">⬅️ Kembali</button>
+    <button class="btn btn-next" onclick="goTo(4)">Selanjutnya ➡️</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: CHAT DEMO -->
+<!-- ============================================================ -->
+<div class="section" id="sec-4">
+  <div class="badge">🎮 Coba Sendiri!</div>
+  <div class="section-title">Demo: Ngobrol dengan AI Mini</div>
+
+  <div class="highlight blue">
+    💬 Coba ngobrol dengan <strong>AI Mini</strong> di bawah ini! Ketik pertanyaanmu dan lihat bagaimana AI menjawab.
+  </div>
+
+  <div class="chat-box">
+    <div class="chat-header">
+      <div class="chat-dot"></div>
+      <div class="chat-dot"></div>
+      🤖 AI Mini — Asisten Belajarmu
+    </div>
+    <div class="chat-messages" id="chat-msgs">
+      <div class="msg ai">Halo! Aku AI Mini 🤖 Aku siap membantu kamu belajar! Coba tanya aku tentang sains, sejarah, atau apa saja yang ingin kamu tahu 😊</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Ketik pertanyaanmu..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">Kirim 🚀</button>
+    </div>
+  </div>
+
+  <div class="highlight green">
+    💡 <strong>Ide Pertanyaan:</strong> "Apa itu fotosintesis?", "Ceritakan tentang Sumpah Pemuda", "Kenapa langit berwarna biru?", "Apa perbedaan planet dan bintang?"
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="goTo(3)">⬅️ Kembali</button>
+    <button class="btn btn-next" onclick="goTo(5)">Selanjutnya ➡️</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: KEAMANAN & ETIKA -->
+<!-- ============================================================ -->
+<div class="section" id="sec-5">
+  <div class="badge">🛡️ Materi 5</div>
+  <div class="section-title">Pakai AI dengan Aman & Bijak</div>
+
+  <div class="highlight pink">
+    ❗ AI adalah alat yang sangat berguna — tapi seperti semua alat, kita harus memakainya dengan <strong>bijak dan bertanggung jawab</strong>!
+  </div>
+
+  <div class="safe-grid">
+    <div class="safe-card do">
+      <h4>✅ BOLEH DILAKUKAN</h4>
+      <ul>
+        <li>Pakai untuk belajar & mengerjakan tugas</li>
+        <li>Tanya tentang ilmu pengetahuan</li>
+        <li>Minta bantuan merangkum teks</li>
+        <li>Cari ide kreatif</li>
+        <li>Tanya tips belajar yang efektif</li>
+      </ul>
+    </div>
+    <div class="safe-card dont">
+      <h4>❌ JANGAN DILAKUKAN</h4>
+      <ul>
+        <li>Kasih tahu alamat atau nomor HP</li>
+        <li>Copy jawaban AI 100% tanpa dipahami</li>
+        <li>Percaya semua info tanpa cek ulang</li>
+        <li>Pakai AI untuk menipu atau curang</li>
+        <li>Bergantung sepenuhnya pada AI</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧠 AI vs Otakmu — Siapa yang Lebih Penting?</h3>
+    <p>AI adalah <strong>asisten</strong>, bukan pengganti otakmu! Otakmu tetap yang paling penting. Gunakan AI untuk membantu belajar, bukan menggantikan proses berpikirmu.</p>
+  </div>
+
+  <div class="highlight yellow">
+    🌟 <strong>Ingat:</strong> AI dibuat oleh manusia untuk membantu manusia. Kamu yang mengendalikan AI, bukan sebaliknya. Jadi, jadilah pengguna AI yang cerdas!
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="goTo(4)">⬅️ Kembali</button>
+    <button class="btn btn-next" onclick="goTo(6)">Kuis Waktu! 🎯</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: KUIS -->
+<!-- ============================================================ -->
+<div class="section" id="sec-6">
+  <div class="badge">🎯 Kuis</div>
+  <div class="section-title">Kuis Kenalan dengan AI</div>
+
+  <div class="card" id="quiz-section">
+    <h3>📝 Data Siswa & Kuis</h3>
+    <div class="highlight blue">
+      Isi nama dulu, lalu jawab semua soal. Setelah selesai, klik <strong>Kirim Hasil</strong>.
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px;" class="quiz-form-grid">
+      <input id="student-name" type="text" placeholder="Nama siswa" style="width:100%; padding:13px 14px; border:2px solid #e2e8f0; border-radius:14px; font-size:0.98rem; font-family:'Nunito', sans-serif; font-weight:700; outline:none; background:#fff;">
+      <input id="student-class" type="text" placeholder="Kelas" style="width:100%; padding:13px 14px; border:2px solid #e2e8f0; border-radius:14px; font-size:0.98rem; font-family:'Nunito', sans-serif; font-weight:700; outline:none; background:#fff;">
+      <input id="teacher-task" type="text" placeholder="Nama tugas / materi" value="Kenalan dengan AI" style="width:100%; padding:13px 14px; border:2px solid #e2e8f0; border-radius:14px; font-size:0.98rem; font-family:'Nunito', sans-serif; font-weight:700; outline:none; background:#fff;">
+    </div>
+
+    <div class="quiz-card" id="q1">
+      <div class="question">1. Apa kepanjangan dari AI?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q1','wrong')">A. Alat Istimewa</button>
+        <button class="quiz-option" onclick="answer(this,'q1','correct')">B. Artificial Intelligence (Kecerdasan Buatan)</button>
+        <button class="quiz-option" onclick="answer(this,'q1','wrong')">C. Animasi Interaktif</button>
+      </div>
+      <div class="quiz-feedback" id="q1-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q2">
+      <div class="question">2. Mana BUKAN contoh AI dalam kehidupan sehari-hari?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q2','wrong')">A. Rekomendasi video YouTube</button>
+        <button class="quiz-option" onclick="answer(this,'q2','wrong')">B. Asisten suara Google</button>
+        <button class="quiz-option" onclick="answer(this,'q2','correct')">C. Kalkulator biasa</button>
+      </div>
+      <div class="quiz-feedback" id="q2-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q3">
+      <div class="question">3. Bagaimana cara AI "belajar"?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q3','wrong')">A. Pergi ke sekolah seperti manusia</button>
+        <button class="quiz-option" onclick="answer(this,'q3','correct')">B. AI belajar dari banyak contoh, seperti kita belajar dari latihan.</button>
+        <button class="quiz-option" onclick="answer(this,'q3','wrong')">C. AI sudah tahu segalanya sejak awal dibuat</button>
+      </div>
+      <div class="quiz-feedback" id="q3-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q4">
+      <div class="question">4. Apa yang sebaiknya kamu lakukan saat mendapat jawaban dari AI?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q4','wrong')">A. Langsung percaya 100%</button>
+        <button class="quiz-option" onclick="answer(this,'q4','correct')">B. Cek kebenarannya dari sumber lain</button>
+        <button class="quiz-option" onclick="answer(this,'q4','wrong')">C. Tidak perlu dibaca, pasti salah</button>
+      </div>
+      <div class="quiz-feedback" id="q4-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q5">
+      <div class="question">5. Mana pertanyaan yang paling baik untuk ditanyakan ke AI?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,'q5','wrong')">A. &quot;Berapa nomor HP guru saya?&quot;</button>
+        <button class="quiz-option" onclick="answer(this,'q5','correct')">B. &quot;Jelaskan proses daur air untuk pelajaran IPA kelas 5 SD&quot;</button>
+        <button class="quiz-option" onclick="answer(this,'q5','wrong')">C. &quot;Kerjain semua PR-ku dong!&quot;</button>
+      </div>
+      <div class="quiz-feedback" id="q5-fb"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📊 Hasil</h3>
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:8px;" class="summary-box-responsive">
+      <div style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:16px; text-align:center;">
+        <div style="color:#64748b; font-size:0.92rem; font-weight:800; margin-bottom:6px;">Skor</div>
+        <div style="font-size:1.5rem; font-weight:900; color:#0f172a;"><span id="score">0</span> / 100</div>
+      </div>
+      <div style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:16px; text-align:center;">
+        <div style="color:#64748b; font-size:0.92rem; font-weight:800; margin-bottom:6px;">Soal Terjawab</div>
+        <div style="font-size:1.5rem; font-weight:900; color:#0f172a;"><span id="answered-count">0</span> / 5</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-prev" onclick="goTo(5)">⬅️ Kembali</button>
+      <button class="btn btn-next" onclick="submitQuizToSheet()">☁️ Kirim Hasil</button>
+      <button class="btn btn-prev" onclick="restart()">🔄 Kerjakan Kuis Ulang</button>
+      <button class="btn btn-prev" onclick="downloadQuizRecap()">⬇️ Download Rekap Excel (.csv)</button>
+      <button class="btn btn-next" onclick="goTo(8)">💬 Isi Feedback</button>
+    </div>
+
+    <div id="sheet-status" style="margin-top:12px; font-weight:900; font-size:0.95rem; color:#64748b;"></div>
+    <div style="text-align:center; color:#64748b; font-size:0.92rem; font-weight:700; margin-top:10px;">Spreadsheet online sudah terhubung otomatis ✅</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: HASIL AKHIR -->
+<!-- ============================================================ -->
+<div class="section" id="sec-7">
+  <div class="final-box">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <h2 id="final-title">Selesai!</h2>
+    <p id="final-message">Kamu sudah menyelesaikan kuis Kenalan dengan AI.</p>
+    <br>
+    <p style="font-size:1.5rem; font-weight:900; color:#0ea5e9;">⭐ Nilai Akhir: <span id="final-score">0</span> / 100</p>
+    <p style="margin-top:8px; font-weight:800; color:#64748b;">Soal terjawab: <span id="final-answered">0</span> / 5</p>
+    <br>
+    <button class="btn btn-prev" onclick="goTo(6)">⬅️ Kembali ke Kuis</button>
+    <button class="btn btn-next" onclick="goTo(8)">💬 Isi Feedback</button>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 9: FEEDBACK PEMBELAJARAN -->
+<!-- ============================================================ -->
+<div class="section" id="sec-8">
+  <div class="badge">💬 Feedback</div>
+  <div class="section-title">Feedback Pembelajaran</div>
+
+  <div class="card">
+    <h3>📝 Ceritakan Pengalaman Belajarmu</h3>
+    <div class="highlight purple">
+      Masukanmu membantu materi ini jadi lebih seru, mudah dipahami, dan bermanfaat untuk siswa berikutnya.
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px;" class="quiz-form-grid">
+      <input id="feedback-name" type="text" placeholder="Nama siswa" style="width:100%; padding:13px 14px; border:2px solid #e2e8f0; border-radius:14px; font-size:0.98rem; font-family:'Nunito', sans-serif; font-weight:700; outline:none; background:#fff;">
+      <input id="feedback-class" type="text" placeholder="Kelas" style="width:100%; padding:13px 14px; border:2px solid #e2e8f0; border-radius:14px; font-size:0.98rem; font-family:'Nunito', sans-serif; font-weight:700; outline:none; background:#fff;">
+      <input id="feedback-task" type="text" placeholder="Nama tugas / materi" value="Kenalan dengan AI" style="width:100%; padding:13px 14px; border:2px solid #e2e8f0; border-radius:14px; font-size:0.98rem; font-family:'Nunito', sans-serif; font-weight:700; outline:none; background:#fff;">
+    </div>
+
+    <div class="quiz-card">
+      <div class="question">1. Seberapa seru materi ini menurutmu?</div>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,5)">⭐ Sangat seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,4)">😊 Seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,3)">🙂 Cukup seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,2)">😐 Kurang seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,1)">😕 Sulit / membingungkan</button>
+      </div>
+      <div id="feedback-rating-text" style="margin-top:10px; font-weight:800; color:#475569;">Belum memilih rating.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="question">2. Bagaimana penyampaian materi ini menurutmu?</div>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,5)">⭐ Sangat seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,4)">😊 Seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,3)">🙂 Cukup seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,2)">😐 Kurang seru</button>
+        <button type="button" class="quiz-option feedback-rating" onclick="setFeedbackRating(this,1)">😕 Sulit / membingungkan</button>
+      </div>
+      <div id="feedback-rating-text" style="margin-top:10px; font-weight:800; color:#475569;">Belum memilih rating.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>📚 Apa yang paling kamu pelajari?</h3>
+      <textarea id="feedback-learned" placeholder="Contoh: Saya jadi tahu AI bisa belajar dari data dan membantu manusia." style="width:100%; min-height:110px; padding:14px; border:2px solid #e2e8f0; border-radius:14px; font-family:'Nunito', sans-serif; font-size:0.98rem; resize:vertical;"></textarea>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>🤔 Bagian mana yang masih sulit?</h3>
+        <textarea id="feedback-difficult" placeholder="Tulis bagian yang masih membingungkan..." style="width:100%; min-height:110px; padding:14px; border:2px solid #e2e8f0; border-radius:14px; font-family:'Nunito', sans-serif; font-size:0.98rem; resize:vertical;"></textarea>
+      </div>
+      <div class="card">
+        <h3>✨ Saran untuk materi ini</h3>
+        <textarea id="feedback-suggestion" placeholder="Contoh: Tambahkan video, gambar, atau contoh yang lebih banyak." style="width:100%; min-height:110px; padding:14px; border:2px solid #e2e8f0; border-radius:14px; font-family:'Nunito', sans-serif; font-size:0.98rem; resize:vertical;"></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-prev" onclick="goTo(7)">⬅️ Kembali</button>
+      <button class="btn btn-next" onclick="submitFeedback()">📩 Kirim Feedback</button>
+      <button class="btn btn-prev" onclick="downloadFeedbackRecap()">⬇️ Download Feedback (.csv)</button>
+    </div>
+
+    <div id="feedback-status" style="margin-top:12px; font-weight:900; font-size:0.95rem; color:#64748b;"></div>
+  </div>
+</div>
+
+<script>
+  const totalSections = 9;
+  let currentSection = 0;
+  let quizScore = 0;
+  const answeredQuiz = {};
+  const quizAnswers = { q1: '', q2: '', q3: '', q4: '', q5: '' };
+
+  const MELYN_API_URL = 'https://api.maelyn.eu/api/ai/chatgpt';
+  const MELYN_API_KEY = 'sk_ms_cd9c9572a922748dcd001ed9a5a0b7e567207396e0118101';
+  const MELYN_MODEL = 'gpt-4o-mini';
+  const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw56UKXIU4MgyUKnkjabEru7z8e07Ywbo7vSJsi7BL2YHC2-zOFA_QGSNeJXUARkVLh/exec';
+  const GOOGLE_FEEDBACK_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9vVSHRU3Ch7P0-gqYtPp6hzOM7D1tTXW9EgKKeeY8egBC80b1LYKr_G0k1x2waFw2cg/exec';
+
+  const chatHistory = [
+    {
+      role: 'system',
+      content: 'Kamu adalah AI Mini, asisten belajar ramah untuk anak-anak dan pelajar. Jawab dalam Bahasa Indonesia yang sederhana, aman, sopan, dan mudah dipahami. Jika memungkinkan, beri contoh singkat.'
+    }
+  ];
+
+  const answerKeys = {
+    q1: 'B. Artificial Intelligence (Kecerdasan Buatan)',
+    q2: 'C. Kalkulator biasa',
+    q3: 'B. Memproses jutaan data dan belajar dari pola',
+    q4: 'B. Cek kebenarannya dari sumber lain',
+    q5: 'B. "Jelaskan proses daur air untuk pelajaran IPA kelas 5 SD"'
+  };
+
+  function getOptionText(btn) {
+    return btn.textContent.trim();
+  }
+
+  const dotContainer = document.getElementById('nav-dots');
+  for (let i = 0; i < totalSections; i++) {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotContainer.appendChild(d);
+  }
+
+  function goTo(idx) {
+    document.getElementById('sec-' + currentSection).classList.remove('active');
+    document.querySelectorAll('.nav-dot')[currentSection].classList.remove('active');
+    currentSection = idx;
+    document.getElementById('sec-' + idx).classList.add('active');
+    document.querySelectorAll('.nav-dot')[idx].classList.add('active');
+    const pct = Math.round(((idx + 1) / totalSections) * 100);
+    document.getElementById('progress').style.width = pct + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (idx === 7) {
+      updateFinalResult();
+    }
+
+    if (idx === 8) {
+      syncFeedbackIdentityFields();
+    }
+
+  }
+
+  function updateSummary() {
+    const scoreEls = document.querySelectorAll('#score, #score-header');
+    scoreEls.forEach((el) => {
+      el.textContent = quizScore;
+    });
+    const answeredCount = Object.values(quizAnswers).filter(Boolean).length;
+    const answeredEl = document.getElementById('answered-count');
+    if (answeredEl) answeredEl.textContent = answeredCount;
+  }
+
+  function updateFinalResult() {
+    const finalScore = document.getElementById('final-score');
+    const finalAnswered = document.getElementById('final-answered');
+    const finalEmoji = document.getElementById('final-emoji');
+    const finalTitle = document.getElementById('final-title');
+    const finalMessage = document.getElementById('final-message');
+    const answeredCount = Object.values(quizAnswers).filter(Boolean).length;
+
+    if (finalScore) finalScore.textContent = quizScore;
+    if (finalAnswered) finalAnswered.textContent = answeredCount;
+
+    if (!finalEmoji || !finalTitle || !finalMessage) return;
+
+    if (quizScore >= 80) {
+      finalEmoji.textContent = '🏆';
+      finalTitle.textContent = 'Luar Biasa!';
+      finalMessage.textContent = 'Nilaimu sangat bagus. Kamu sudah paham materi AI dengan sangat baik!';
+    } else if (quizScore >= 60) {
+      finalEmoji.textContent = '🌟';
+      finalTitle.textContent = 'Bagus Sekali!';
+      finalMessage.textContent = 'Kamu sudah memahami banyak hal tentang AI. Sedikit lagi jadi ahli!';
+    } else {
+      finalEmoji.textContent = '💪';
+      finalTitle.textContent = 'Tetap Semangat!';
+      finalMessage.textContent = 'Coba baca lagi materinya dan ulangi kuisnya ya. Kamu pasti bisa lebih baik!';
+    }
+  }
+
+  function answer(btn, qid, result) {
+    if (answeredQuiz[qid]) return;
+    answeredQuiz[qid] = true;
+    quizAnswers[qid] = getOptionText(btn);
+
+    const fb = document.getElementById(qid + '-fb');
+    const allBtns = btn.closest('.quiz-options').querySelectorAll('.quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+    if (result === 'correct') {
+      btn.classList.add('correct');
+      quizScore += 20;
+      fb.textContent = '✅ Benar! +20 poin';
+      fb.className = 'quiz-feedback show ok';
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '❌ Belum tepat.';
+      fb.className = 'quiz-feedback show no';
+      allBtns.forEach(b => { if (b.onclick.toString().includes("'correct'")) b.classList.add('correct'); });
+    }
+
+    updateSummary();
+    updateFinalResult();
+  }
+
+  function restart() {
+    quizScore = 0;
+    Object.keys(answeredQuiz).forEach(k => delete answeredQuiz[k]);
+    Object.keys(quizAnswers).forEach(k => quizAnswers[k] = '');
+    updateSummary();
+    updateFinalResult();
+
+    ['q1','q2','q3','q4','q5'].forEach(qid => {
+      const card = document.getElementById(qid);
+      card.querySelectorAll('.quiz-option').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct','wrong');
+      });
+      const fb = document.getElementById(qid+'-fb');
+      fb.className = 'quiz-feedback';
+      fb.textContent = '';
+    });
+
+    chatHistory.length = 1;
+    document.getElementById('chat-msgs').innerHTML =
+      '<div class="msg ai">Halo! Aku AI Mini 🤖 Aku siap membantu kamu belajar! Coba tanya aku tentang sains, sejarah, atau apa saja yang ingin kamu tahu 😊</div>';
+
+    ['student-name','student-class','teacher-task','feedback-name','feedback-class','feedback-task','feedback-learned','feedback-difficult','feedback-suggestion'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    feedbackData.rating = 0;
+    const ratingText = document.getElementById('feedback-rating-text');
+    if (ratingText) ratingText.textContent = 'Belum memilih rating.';
+    document.querySelectorAll('.feedback-rating').forEach(el => el.classList.remove('correct','wrong'));
+    updateSheetStatus('', '');
+    updateFeedbackStatus('', '');
+
+    const quizSection = document.getElementById('quiz-section');
+    if (quizSection) {
+      quizSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    goTo(6);
+  }
+
+  function formatAIText(text) {
+  text = text
+    .replace(/^### (.*$)/gim, '<h4>$1</h4>')
+    .replace(/^## (.*$)/gim, '<h3>$1</h3>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^- (.*)$/gim, '<li>$1</li>')
+    .replace(/\n\n+/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+
+  return '<p>' + text + '</p>';
+}
+
+function appendMessage(text, sender = 'ai') {
+  const msgs = document.getElementById('chat-msgs');
+  const el = document.createElement('div');
+  el.className = 'msg ' + sender;
+
+  if (sender === 'ai') {
+    el.innerHTML = formatAIText(text); // ✅ di sini perubahan utama
+  } else {
+    el.textContent = text;
+  }
+
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+  async function parseResponse(response) {
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (e) {
+      throw new Error('Respons API bukan JSON.');
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(data?.message || 'Gagal mendapatkan respons dari Melyn API');
+    }
+
+    return data?.result?.text || 'Maaf, saya belum bisa menjawab sekarang.';
+  }
+
+  async function askMelyn(messages, plainText) {
+    try {
+      const response = await fetch(MELYN_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-maelyn-auth': MELYN_API_KEY
+        },
+        body: JSON.stringify({
+          model: MELYN_MODEL,
+          messages
+        })
+      });
+      return await parseResponse(response);
+    } catch (err) {
+      const response = await fetch(MELYN_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-maelyn-auth': MELYN_API_KEY
+        },
+        body: JSON.stringify({
+          model: MELYN_MODEL,
+          text: plainText
+        })
+      });
+      return await parseResponse(response);
+    }
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendMessage(text, 'user');
+    input.value = '';
+
+    chatHistory.push({
+      role: 'user',
+      content: text
+    });
+
+    const typing = appendMessage('...sedang mengetik 🤔', 'ai');
+
+    try {
+      if (!MELYN_API_KEY || MELYN_API_KEY === 'YOUR_API_KEY') {
+        throw new Error('API key belum diisi.');
+      }
+
+      const reply = await askMelyn(chatHistory, text);
+      typing.innerHTML = formatAIText(reply);
+
+      chatHistory.push({
+        role: 'assistant',
+        content: reply
+      });
+    } catch (error) {
+      typing.textContent = 'Maaf, chat belum bisa terhubung. Coba jalankan file lewat localhost/server. Detail: ' + error.message;
+      console.error('Melyn API Error:', error);
+    }
+  }
+
+
+  function syncFeedbackIdentityFields() {
+    const studentName = document.getElementById('student-name')?.value || '';
+    const studentClass = document.getElementById('student-class')?.value || '';
+    const teacherTask = document.getElementById('teacher-task')?.value || 'Kenalan dengan AI';
+
+    const feedbackName = document.getElementById('feedback-name');
+    const feedbackClass = document.getElementById('feedback-class');
+    const feedbackTask = document.getElementById('feedback-task');
+
+    if (feedbackName && !feedbackName.value) feedbackName.value = studentName;
+    if (feedbackClass && !feedbackClass.value) feedbackClass.value = studentClass;
+    if (feedbackTask && !feedbackTask.value) feedbackTask.value = teacherTask;
+  }
+
+  const feedbackData = { rating: 0 };
+
+  function setFeedbackRating(btn, value) {
+    feedbackData.rating = value;
+    document.querySelectorAll('.feedback-rating').forEach(el => {
+      el.classList.remove('correct');
+      el.classList.remove('wrong');
+    });
+    btn.classList.add('correct');
+    const labels = {5:'⭐ Sangat seru',4:'😊 Seru',3:'🙂 Cukup seru',2:'😐 Kurang seru',1:'😕 Sulit / membingungkan'};
+    const text = document.getElementById('feedback-rating-text');
+    if (text) text.textContent = 'Pilihanmu: ' + labels[value];
+  }
+
+  function updateFeedbackStatus(message, type='') {
+    const el = document.getElementById('feedback-status');
+    if (!el) return;
+    el.textContent = message;
+    if (type === 'success') el.style.color = '#065f46';
+    else if (type === 'error') el.style.color = '#9f1239';
+    else el.style.color = '#64748b';
+  }
+
+  function buildFeedbackData() {
+    const studentName = document.getElementById('feedback-name')?.value.trim() || document.getElementById('student-name')?.value.trim() || '';
+    const studentClass = document.getElementById('feedback-class')?.value.trim() || document.getElementById('student-class')?.value.trim() || '';
+    const teacherTask = document.getElementById('feedback-task')?.value.trim() || document.getElementById('teacher-task')?.value.trim() || 'Kenalan dengan AI';
+    const learned = document.getElementById('feedback-learned')?.value.trim() || '';
+    const difficult = document.getElementById('feedback-difficult')?.value.trim() || '';
+    const suggestion = document.getElementById('feedback-suggestion')?.value.trim() || '';
+
+    if (!studentName) throw new Error('Isi nama siswa dulu ya.');
+    if (!feedbackData.rating) throw new Error('Pilih rating feedback dulu ya.');
+
+    return {
+      tanggal: new Date().toLocaleString('id-ID'),
+      nama: studentName,
+      kelas: studentClass,
+      tugas: teacherTask,
+      rating: feedbackData.rating,
+      dipelajari: learned,
+      yang_dipelajari: learned,
+      sulit: difficult,
+      bagian_sulit: difficult,
+      saran: suggestion,
+      skor_kuis: quizScore,
+      userAgent: navigator.userAgent
+    };
+  }
+
+  async function submitFeedback() {
+    try {
+      const webAppUrl = GOOGLE_FEEDBACK_WEBAPP_URL;
+      if (!webAppUrl) throw new Error('URL Google Sheets feedback belum dipasang.');
+
+      const payload = buildFeedbackData();
+      updateFeedbackStatus('Sedang mengirim feedback ke Google Sheets...', '');
+
+      const response = await fetch(webAppUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      const resultText = await response.text();
+      let result = {};
+      try { result = JSON.parse(resultText); } catch (e) {}
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Gagal mengirim feedback ke Google Sheets.');
+      }
+
+      if (result.status && result.status !== 'success') {
+        throw new Error(result.message || 'Google Sheets menolak data feedback.');
+      }
+
+      updateFeedbackStatus('Berhasil! Feedback sudah masuk ke Google Sheets kamu. Terima kasih ya ✨', 'success');
+    } catch (error) {
+      updateFeedbackStatus('Gagal: ' + error.message, 'error');
+      console.error('Submit feedback error:', error);
+    }
+  }
+
+  function downloadFeedbackRecap() {
+    try {
+      const data = buildFeedbackData();
+      const headers = ['Tanggal','Nama','Kelas','Tugas','Rating','Yang Dipelajari','Bagian Sulit','Saran','Skor Kuis'];
+      const row = [data.tanggal, data.nama, data.kelas, data.tugas, data.rating, data.yang_dipelajari, data.bagian_sulit, data.saran, data.skor_kuis];
+      const csvContent = '\ufeff' + headers.map(csvEscape).join(',') + '\n' + row.map(csvEscape).join(',');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeName = (data.nama || 'siswa').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'siswa';
+      a.href = url;
+      a.download = 'feedback-pembelajaran-' + safeName + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      updateFeedbackStatus('File feedback berhasil didownload.', 'success');
+    } catch (error) {
+      updateFeedbackStatus('Gagal: ' + error.message, 'error');
+    }
+  }
+
+  function csvEscape(value) {
+    const text = String(value ?? '');
+    return '"' + text.replace(/"/g, '""') + '"';
+  }
+
+  function buildRecapData() {
+    const studentName = document.getElementById('student-name')?.value.trim() || '';
+    const studentClass = document.getElementById('student-class')?.value.trim() || '';
+    const teacherTask = document.getElementById('teacher-task')?.value.trim() || 'Kenalan dengan AI';
+    const answeredCount = Object.values(quizAnswers).filter(Boolean).length;
+
+    if (!studentName) throw new Error('Isi nama siswa dulu ya.');
+    if (answeredCount < 5) throw new Error('Kuis belum selesai. Jawab semua soal dulu ya.');
+
+    const now = new Date();
+    return {
+      tanggal: now.toLocaleString('id-ID'),
+      nama: studentName,
+      kelas: studentClass,
+      tugas: teacherTask,
+      skor: quizScore + ' / 100',
+      nilai: quizScore,
+      jawaban_q1: quizAnswers.q1,
+      kunci_q1: answerKeys.q1,
+      jawaban_q2: quizAnswers.q2,
+      kunci_q2: answerKeys.q2,
+      jawaban_q3: quizAnswers.q3,
+      kunci_q3: answerKeys.q3,
+      jawaban_q4: quizAnswers.q4,
+      kunci_q4: answerKeys.q4,
+      jawaban_q5: quizAnswers.q5,
+      kunci_q5: answerKeys.q5
+    };
+  }
+
+  function updateSheetStatus(message, type='') {
+    const el = document.getElementById('sheet-status');
+    if (!el) return;
+    el.textContent = message;
+    if (type === 'success') el.style.color = '#065f46';
+    else if (type === 'error') el.style.color = '#9f1239';
+    else el.style.color = '#64748b';
+  }
+
+  async function submitQuizToSheet() {
+    try {
+      const webAppUrl = GOOGLE_SHEET_WEBAPP_URL;
+      if (!webAppUrl) throw new Error('URL Google Sheets belum dipasang.');
+
+      const payload = buildRecapData();
+      updateSheetStatus('Sedang mengirim ke Google Sheets...', '');
+
+      const response = await fetch(webAppUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      const resultText = await response.text();
+      let result = {};
+      try { result = JSON.parse(resultText); } catch (e) {}
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Gagal mengirim data ke Google Sheets.');
+      }
+
+      if (result.status && result.status !== 'success') {
+        throw new Error(result.message || 'Google Sheets menolak data.');
+      }
+
+      updateSheetStatus('Berhasil! Rekap sudah masuk ke Google Sheets.', 'success');
+      updateSummary();
+      updateFinalResult();
+      setTimeout(() => {
+        goTo(7);
+      }, 500);
+    } catch (error) {
+      updateSheetStatus('Gagal: ' + error.message, 'error');
+      console.error('Submit to Sheets error:', error);
+    }
+  }
+
+  function downloadQuizRecap() {
+    try {
+      const data = buildRecapData();
+      const headers = [
+        'Tanggal','Nama','Kelas','Tugas','Skor','Nilai',
+        'Jawaban Q1','Kunci Q1','Jawaban Q2','Kunci Q2',
+        'Jawaban Q3','Kunci Q3','Jawaban Q4','Kunci Q4',
+        'Jawaban Q5','Kunci Q5'
+      ];
+
+      const row = [
+        data.tanggal, data.nama, data.kelas, data.tugas, data.skor, data.nilai,
+        data.jawaban_q1, data.kunci_q1, data.jawaban_q2, data.kunci_q2,
+        data.jawaban_q3, data.kunci_q3, data.jawaban_q4, data.kunci_q4,
+        data.jawaban_q5, data.kunci_q5
+      ];
+
+      const csvContent =
+        '\ufeff' +
+        headers.map(csvEscape).join(',') + '\n' +
+        row.map(csvEscape).join(',');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeName = data.nama.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'siswa';
+      a.href = url;
+      a.download = 'rekap-kuis-' + safeName + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+  ['student-name','student-class','teacher-task'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', syncFeedbackIdentityFields);
+      el.addEventListener('change', syncFeedbackIdentityFields);
+    }
+  });
+
+  updateSummary();
+  updateFinalResult();
+</script>
+
+</body>
+</html>
